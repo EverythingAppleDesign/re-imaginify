@@ -21,16 +21,12 @@ export const connectToDatabase = async () => {
 
     if(!MONGODB_URL) throw new Error('Missing MONGODB_URL');
 
-    // If not try to make a new connection to MongoDB...
-    cached.promise = 
-        cached.promise ||
-        mongoose.connect(MONGODB_URL, {
-            dbName: 're-imaginify', bufferCommands: false
-        })
+    // If there is no cached promise of a connection, create new cached promise...
+    cached.promise = cached.promise || mongoose.connect(MONGODB_URL, { dbName: 'reimaginify', bufferCommands: false })
 
     cached.conn = await cached.promise;
 
     return cached.conn;
 }
 
-// Note: Serverless is more scalable...
+// Note: Serverless architecture is more scalable...

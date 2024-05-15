@@ -1,20 +1,13 @@
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
- 
-const isProtectedRoute = createRouteMatcher([
-  '/dashboard(.*)',
-  '/usercredits(.*)',
-  '/userprofile(.*)',
-  '/usertransformations(.*)',
-]);
- 
-export default clerkMiddleware((auth, req) => {
-  if (!auth().userId && isProtectedRoute(req)) {
- 
-    // Add custom logic to run before redirecting
-    publicRoutes: ['/api/webhooks/clerk']
- 
-    return auth().redirectToSignIn();
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
+
+const isPublicRoute = createRouteMatcher(['/sign-in(.*)', '/sign-up(.*)']);
+
+export default clerkMiddleware((auth, request) => {
+  if(!isPublicRoute(request)) {
+    auth().protect();
   }
 });
- 
-export const config = { matcher: ['/((?!.+\\.[\\w]+$|_next).*)', '/', '/(api|trpc)(.*)']};
+
+export const config = {
+  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
+}
